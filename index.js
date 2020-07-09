@@ -58,7 +58,7 @@ Write a function called `inning` that generates a random number of points that a
 
 function inning(/*Code Here*/){
 
-    /*Code Here*/
+    return Math.floor(Math.random() * 3);
 
 }
 
@@ -76,35 +76,118 @@ finalScore(inning, 9) might return:
 
 */ 
 
-function finalScore(/*code Here*/){
+function finalScore(inningCB, numInnings){
 
-  /*Code Here*/
-
+  let homeScore = 0;
+  let awayScore = 0;
+  for(let i = 0; i < numInnings; i++)
+  {
+	  homeScore += inningCB();
+	  awayScore += inningCB();	  
+  }
+  return {
+	  Home: homeScore,
+	  Away: awayScore
+  }
 }
+console.log("Task 3", finalScore(inning, 9));
 
 /* Task 4: 
 
 Create a function called `scoreboard` that accepts the following parameters: 
-
-(1) Callback function `inning` that you wrote above
+(1) Callback function `getInningScore`
+(2) Callback function `inning`
 (2) A number of innings
 
 and returns the score at each pont in the game, like so:
 
-1st inning: 0 - 2
-2nd inning: 1 - 3
-3rd inning: 1 - 3
-4th inning: 2 - 4
-5th inning: 4 - 6
-6th inning: 4 - 6
-7th inning: 4 - 6
-8th inning: 5 - 8
-9th inning: 6 - 10
+1st inning: awayTeam - homeTeam
+2nd inning: awayTeam - homeTeam
+3rd inning: awayTeam - homeTeam
+4th inning: awayTeam - homeTeam
+5th inning: awayTeam - homeTeam
+6th inning: awayTeam - homeTeam
+7th inning: awayTeam - homeTeam
+8th inning: awayTeam - homeTeam
+9th inning: awayTeam - homeTeam
+Final Score: awayTeam - homeTeam */
 
-Final Score: 6 - 10 */
+console.log("Task 4");
 
-function scoreboard(/* CODE HERE */) {
-  /* CODE HERE */
+function getInningScore(inningCB)
+{
+	let home = 0;
+	
+	let away = 0;
+	return function () 
+	{ 
+		home += inningCB();
+		away += inningCB();
+		return {Home: home, Away: away};
+	}
 }
+
+function scoreboard(getInningScoreCB, inningCB, innings) 
+{
+	const scoresByInning = [];
+	const temp = getInningScoreCB(inningCB);
+	
+	for(let i = 0; i < innings; i++)
+	{
+		scoresByInning.push(temp());
+		//let temp = getInningScoreCB(inningCB);
+		//scoresByInning.push( `${temp.Home} - ${temp.Away}`);
+	}
+	
+	for(let i = 0; i < innings; i++)
+	{
+		if(i === 10)
+			console.log("--- This game requires additional innings ---");
+		console.log(`Inning ${i+1}: ${scoresByInning[i].Home} - ${scoresByInning[i].Away}`);		
+	}
+	//console.log(`Final Score: ${scoresByInning[innings-1].Home} - ${scoresByInning[innings-1].Away}`);
+	
+	let home = "";
+	let away = "";
+	
+	if(scoresByInning[innings-1].Home < scoresByInning[innings-1].Away)
+	{
+		home = `\x1b[31m${scoresByInning[innings-1].Home}\x1b[0m`;
+		away = `\x1b[32m${scoresByInning[innings-1].Away}\x1b[0m`;
+	}
+	else if(scoresByInning[innings-1].Home === scoresByInning[innings-1].Away)
+	{
+		home = `\x1b[33m${scoresByInning[innings-1].Home}\x1b[0m - \x1b[35mTIE\x1b[0m`;
+		away = `\x1b[33m${scoresByInning[innings-1].Away}\x1b[0m`;
+	}
+	else
+	{
+		home = `\x1b[32m${scoresByInning[innings-1].Home}\x1b[0m`;
+		away = `\x1b[31m${scoresByInning[innings-1].Away}\x1b[0m`;
+	}
+	
+	console.log(`\nFinal Score: ${home} - ${away}\n`);
+}
+
+const a = scoreboard(getInningScore, inning, 11);
+const b = scoreboard(getInningScore, inning, 15);
+const c = scoreboard(getInningScore, inning, 9);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
